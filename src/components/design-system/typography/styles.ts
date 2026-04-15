@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 /** PostScript names from `@expo-google-fonts/manrope` (must match `useFonts` keys). */
-const manrope = {
+export const manrope = {
   medium: 'Manrope_500Medium',
   semiBold: 'Manrope_600SemiBold',
   bold: 'Manrope_700Bold',
@@ -44,6 +44,12 @@ export const typographyStyles = StyleSheet.create({
     fontFamily: manrope.medium,
     fontSize: 14,
     lineHeight: 20,
+    letterSpacing: 0,
+  },
+  tabLabel: {
+    fontFamily: manrope.medium,
+    fontSize: 13,
+    lineHeight: 18,
     letterSpacing: 0,
   },
 });

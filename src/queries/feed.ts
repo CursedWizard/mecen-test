@@ -1,10 +1,15 @@
 import { fetchPostsPage, likePost } from '@/lib/api/posts';
-import type { Post, PostsPage } from '@/lib/api/types';
+import type { FeedTierFilter, Post, PostsPage } from '@/lib/api/types';
 import { postDetailQueryKey } from '@/queries/post-detail';
-import type { InfiniteData } from '@tanstack/react-query';
+import type { InfiniteData, QueryClient, QueryKey } from '@tanstack/react-query';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const FEED_QUERY_KEY = ['posts', 'feed'] as const;
+/** Prefix for all feed infinite queries (`['posts', 'feed', tierSegment]`). */
+export const FEED_QUERY_KEY_PREFIX = ['posts', 'feed'] as const;
+
+export function feedInfiniteQueryKey(tierFilter: FeedTierFilter) {
+  return [...FEED_QUERY_KEY_PREFIX, tierFilter ?? 'all'] as const;
+}
 
 const PAGE_SIZE = 15;
 
@@ -28,12 +33,50 @@ function patchPostInFeedCache(
   };
 }
 
-export function useFeedInfiniteQuery() {
+function setAllFeedInfiniteCaches(
+  queryClient: QueryClient,
+  updater: (old: InfiniteData<PostsPage> | undefined) => InfiniteData<PostsPage> | undefined,
+): void {
+  queryClient.setQueriesData<InfiniteData<PostsPage>>(
+    { queryKey: [...FEED_QUERY_KEY_PREFIX] },
+    updater,
+  );
+}
+
+/** Applies server `likesCount` from realtime (does not change `isLiked`). */
+export function updatePostLikesCountInCaches(
+  queryClient: QueryClient,
+  postId: string,
+  likesCount: number,
+): void {
+  setAllFeedInfiniteCaches(queryClient, (old) =>
+    patchPostInFeedCache(old, postId, (p) => ({ ...p, likesCount })),
+  );
+  queryClient.setQueryData<Post | undefined>(postDetailQueryKey(postId), (old) =>
+    old ? { ...old, likesCount } : old,
+  );
+}
+
+/** Increments `commentsCount` on the post in feed and post-detail caches (e.g. realtime `comment_added`). */
+export function incrementPostCommentsCountInCaches(queryClient: QueryClient, postId: string): void {
+  setAllFeedInfiniteCaches(queryClient, (old) =>
+    patchPostInFeedCache(old, postId, (p) => ({ ...p, commentsCount: Math.max(0, p.commentsCount + 1) })),
+  );
+  queryClient.setQueryData<Post | undefined>(postDetailQueryKey(postId), (old) =>
+    old ? { ...old, commentsCount: Math.max(0, old.commentsCount + 1) } : old,
+  );
+}
+
+export function useFeedInfiniteQuery(tierFilter: FeedTierFilter) {
   return useInfiniteQuery({
-    queryKey: FEED_QUERY_KEY,
+    queryKey: feedInfiniteQueryKey(tierFilter),
     initialPageParam: undefined as string | undefined,
     queryFn: async ({ pageParam }) => {
-      const res = await fetchPostsPage({ cursor: pageParam, limit: PAGE_SIZE });
+      const res = await fetchPostsPage({
+        cursor: pageParam,
+        limit: PAGE_SIZE,
+        tier: tierFilter,
+      });
       if (!res.ok) {
         throw new Error('bad_response');
       }
@@ -50,11 +93,13 @@ export function useLikePostMutation() {
   return useMutation({
     mutationFn: likePost,
     onMutate: async (postId) => {
-      await queryClient.cancelQueries({ queryKey: FEED_QUERY_KEY });
+      await queryClient.cancelQueries({ queryKey: [...FEED_QUERY_KEY_PREFIX] });
       await queryClient.cancelQueries({ queryKey: postDetailQueryKey(postId) });
-      const previous = queryClient.getQueryData<InfiniteData<PostsPage>>(FEED_QUERY_KEY);
+      const previousFeedEntries = queryClient.getQueriesData<InfiniteData<PostsPage>>({
+        queryKey: [...FEED_QUERY_KEY_PREFIX],
+      });
       const previousDetail = queryClient.getQueryData<Post>(postDetailQueryKey(postId));
-      queryClient.setQueryData<InfiniteData<PostsPage>>(FEED_QUERY_KEY, (old) =>
+      setAllFeedInfiniteCaches(queryClient, (old) =>
         patchPostInFeedCache(old, postId, (p) => {
           const wasLiked = p.isLiked ?? false;
           return {
@@ -73,18 +118,18 @@ export function useLikePostMutation() {
           likesCount: Math.max(0, wasLiked ? old.likesCount - 1 : old.likesCount + 1),
         };
       });
-      return { previous, previousDetail };
+      return { previousFeedEntries, previousDetail };
     },
     onError: (_err, postId, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(FEED_QUERY_KEY, context.previous);
-      }
+      context?.previousFeedEntries?.forEach(([key, data]) => {
+        queryClient.setQueryData(key as QueryKey, data);
+      });
       if (context?.previousDetail !== undefined) {
         queryClient.setQueryData(postDetailQueryKey(postId), context.previousDetail);
       }
     },
     onSuccess: (data, postId) => {
-      queryClient.setQueryData<InfiniteData<PostsPage>>(FEED_QUERY_KEY, (old) =>
+      setAllFeedInfiniteCaches(queryClient, (old) =>
         patchPostInFeedCache(old, postId, (p) => ({
           ...p,
           isLiked: data.isLiked,

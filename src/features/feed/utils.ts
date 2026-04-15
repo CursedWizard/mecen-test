@@ -1,4 +1,21 @@
-import type { Post } from '@/lib/api/types';
+import type { FeedTierTabKey } from '@/features/feed/types';
+import type { FeedTierFilter, Post } from '@/lib/api/types';
+
+export const FEED_TIER_TAB_ITEMS: { key: FeedTierTabKey; label: string }[] = [
+  { key: 'all', label: 'Все' },
+  { key: 'free', label: 'Бесплатные' },
+  { key: 'paid', label: 'Платные' },
+];
+
+export function feedTierTabKeyFromFilter(filter: FeedTierFilter): FeedTierTabKey {
+  if (filter === undefined) return 'all';
+  return filter;
+}
+
+export function feedTierFilterFromTabKey(key: FeedTierTabKey): FeedTierFilter {
+  if (key === 'all') return undefined;
+  return key;
+}
 
 export function descriptionSource(post: Post): string {
   if (post.preview?.trim()) return post.preview.trim();

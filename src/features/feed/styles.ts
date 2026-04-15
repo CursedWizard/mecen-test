@@ -215,3 +215,10 @@ export const feedPostDetailStyles = StyleSheet.create({
     marginTop: 2,
   },
 });
+
+export const feedTierListHeaderStyles = StyleSheet.create({
+  root: {
+    paddingHorizontal: Spacing.medium,
+    paddingVertical: Spacing.medium,
+  },
+});

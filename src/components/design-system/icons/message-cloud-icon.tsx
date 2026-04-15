@@ -1,3 +1,4 @@
+import { ColorPalette } from "@/constants/theme";
 import * as React from "react";
 import Svg, { ClipPath, Defs, G, Path, SvgProps } from "react-native-svg";
 
@@ -20,7 +21,7 @@ const MessageCloudIcon = (props: MessageCloudIconProps) => (
   >
     <G clipPath="url(#a)">
       <Path
-        fill={props.color || "#57626F"}
+        fill={props.color || ColorPalette.ActionDefaultTextMain}
         d={MESSAGE_CLOUD_PATH_D}
       />
     </G>

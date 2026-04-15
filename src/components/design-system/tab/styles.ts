@@ -1,36 +1,58 @@
 import { StyleSheet } from 'react-native';
 
 import { ColorPalette } from '@/constants/theme';
+import { manrope, typographyStyles } from '../typography/styles';
 
 export const tabTokens = {
-  trackBackground: ColorPalette.TabBarTrackBackground,
+  trackBackground: ColorPalette.TabPillContainerBackground,
+  trackBorder: ColorPalette.TabPillContainerBorder,
+  indicatorBackground: ColorPalette.TabSegmentBackgroundActive,
   inactiveLabel: ColorPalette.TabLabelInactive,
-  activeSegmentBackground: ColorPalette.TabSegmentBackgroundActive,
   activeLabel: ColorPalette.TabLabelActive,
-  inactivePressBackground: ColorPalette.TabInactiveSegmentPressedBackground,
-  activePressBackground: ColorPalette.TabActiveSegmentPressedBackground,
-  inactiveIdleBackground: ColorPalette.TabInactiveIdleBackground,
 } as const;
 
 export const pressAnimationDurationMs = 160;
 
+export const tabSelectionAnimationDurationMs = 280;
+
+const trackHorizontalPadding = 0;
+const trackVerticalPadding = 0;
+
+export { trackHorizontalPadding, trackVerticalPadding };
+
 export const tabStyles = StyleSheet.create({
   track: {
+    position: 'relative',
     flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 6,
-    padding: 6,
-    borderRadius: 14,
+    alignItems: 'stretch',
     backgroundColor: tabTokens.trackBackground,
+    borderWidth: 1,
+    borderColor: tabTokens.trackBorder,
+    borderRadius: 100,
+    paddingVertical: trackVerticalPadding,
+    paddingHorizontal: trackHorizontalPadding,
+    overflow: 'hidden',
+  },
+  indicator: {
+    position: 'absolute',
+    top: trackVerticalPadding,
+    bottom: trackVerticalPadding,
+    left: trackHorizontalPadding,
+    borderRadius: 100,
+    backgroundColor: tabTokens.indicatorBackground,
   },
   segment: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    zIndex: 1,
   },
   segmentLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...typographyStyles.tabLabel,
+  },
+  segmentLabelActive: {
+    ...typographyStyles.tabLabel,
+    fontFamily: manrope.bold,
   },
 });

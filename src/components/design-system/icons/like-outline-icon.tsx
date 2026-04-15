@@ -1,3 +1,4 @@
+import { ColorPalette } from "@/constants/theme";
 import * as React from "react";
 import Svg, { Path, SvgProps } from "react-native-svg";
 
@@ -17,7 +18,7 @@ const LikeOutlineIcon = (props: LikeOutlineIconProps) => (
     {...props}
   >
     <Path
-      fill={props.color || "#57626F"}
+      fill={props.color || ColorPalette.ActionDefaultTextMain}
       d={LIKE_OUTLINE_PATH_D}
     />
   </Svg>

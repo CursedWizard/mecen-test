@@ -1,3 +1,4 @@
+import { ColorPalette } from "@/constants/theme";
 import * as React from "react";
 import Svg, { Path, SvgProps } from "react-native-svg";
 
@@ -17,7 +18,7 @@ const LikeFilledIcon = (props: LikeFilledIconProps) => (
     {...props}
   >
     <Path
-      fill={props.color || "#FFEAF1"}
+      fill={props.color || ColorPalette.ActionActiveTextMain}
       d={LIKE_FILLED_PATH_D}
     />
   </Svg>

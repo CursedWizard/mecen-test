@@ -4,6 +4,7 @@ import { DsSendMessage } from '@/components/send-message/ui';
 import { ColorPalette, Spacing } from '@/constants/theme';
 import { FeedCommentRow } from '@/features/feed/ui/feed-comment-row';
 import { FeedPostDetailHeader } from '@/features/feed/ui/feed-post-detail-header';
+import { useFeedPostDetailRealtime } from '@/hooks/use-feed-post-detail-realtime';
 import { useGetKeyboardHeight } from '@/hooks/use-keyboard-height';
 import { ApiError } from '@/lib/api/client';
 import type { Comment } from '@/lib/api/types';
@@ -28,6 +29,8 @@ export default function FeedPostDetailScreen() {
   const insets = useSafeAreaInsets();
   const rawId = useLocalSearchParams<{ id: string | string[] }>().id;
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+  useFeedPostDetailRealtime(Boolean(id));
 
   const [composerText, setComposerText] = React.useState('');
   const composerInputRef = React.useRef<TextInput>(null);

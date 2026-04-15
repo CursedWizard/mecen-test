@@ -35,6 +35,9 @@ export enum ColorPalette {
   LinkTextDisabled = '#B6BEC8',
 
   // Tab strip
+  /** Segmented control track (sliding pill indicator). */
+  TabPillContainerBackground = '#FFFFFF',
+  TabPillContainerBorder = '#E5E8ED',
   TabBarTrackBackground = '#EFF2F7',
   TabLabelInactive = '#57626F',
   TabSegmentBackgroundActive = '#6115CD',

@@ -3,9 +3,12 @@ import { EmptyRequestResult } from '@/components/error-placeholder/ui';
 import { ColorPalette, Spacing } from '@/constants/theme';
 import { FeedPostCard } from '@/features/feed/ui/feed-post-card';
 import { FeedPostCardSkeleton } from '@/features/feed/ui/feed-post-card-skeleton';
+import { FeedTierListHeader } from '@/features/feed/ui/feed-tier-list-header';
 import type { Post } from '@/lib/api/types';
 import { useFeedInfiniteQuery, useLikePostMutation } from '@/queries/feed';
+import { feedStore } from '@/store/feed-store';
 import { router } from 'expo-router';
+import { observer } from 'mobx-react-lite';
 import * as React from 'react';
 import {
   ActivityIndicator,
@@ -19,7 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const FEED_SKELETON_KEYS = ['feed-skeleton-0', 'feed-skeleton-1', 'feed-skeleton-2'] as const;
 
-export default function FeedScreen() {
+function FeedScreen() {
   const insets = useSafeAreaInsets();
   const { mutate: likePost } = useLikePostMutation();
 
@@ -31,7 +34,7 @@ export default function FeedScreen() {
   );
 
   const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isRefetching, refetch } =
-    useFeedInfiniteQuery();
+    useFeedInfiniteQuery(feedStore.tierFilter);
 
   const posts = React.useMemo(() => data?.pages.flatMap((p) => p.posts) ?? [], [data?.pages]);
 
@@ -66,6 +69,7 @@ export default function FeedScreen() {
           data={FEED_SKELETON_KEYS}
           keyExtractor={(id) => id}
           renderItem={() => <FeedPostCardSkeleton />}
+          ListHeaderComponent={<FeedTierListHeader />}
           contentContainerStyle={styles.listContent}
         />
       </View>
@@ -86,6 +90,7 @@ export default function FeedScreen() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        ListHeaderComponent={<FeedTierListHeader />}
         ListFooterComponent={footer}
         contentContainerStyle={styles.listContent}
         refreshControl={
@@ -104,6 +109,8 @@ export default function FeedScreen() {
     </View>
   );
 }
+
+export default observer(FeedScreen);
 
 const styles = StyleSheet.create({
   root: {

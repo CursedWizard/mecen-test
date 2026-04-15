@@ -1,5 +1,8 @@
 export type PostTier = 'free' | 'paid';
 
+/** GET /posts `tier` query: omit for all posts, or filter by tier. */
+export type FeedTierFilter = PostTier | undefined;
+
 export type Author = {
   id: string;
   username: string;

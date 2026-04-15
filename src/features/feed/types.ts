@@ -1,7 +1,9 @@
 import type { RefObject } from 'react';
 import type { StyleProp, View, ViewStyle } from 'react-native';
 
-import type { Comment, Post } from '@/lib/api/types';
+import type { Comment, Post, PostTier } from '@/lib/api/types';
+
+export type FeedTierTabKey = 'all' | PostTier;
 
 export type FeedPostCardVariant = 'feed' | 'detail';
 
