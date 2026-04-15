@@ -182,9 +182,10 @@ export default function FeedPostDetailScreen() {
         {
           onError: () => {
             setComposerText(trimmed);
-            },
           },
-        );
+        },
+      );
+      setComposerText('');
     }, 200);
   }, [addComment, composerText, id, hideKeyboard]);
 
@@ -217,7 +218,7 @@ export default function FeedPostDetailScreen() {
           style={[
             styles.composerBar,
             {
-              paddingBottom: Math.max(insets.bottom, Spacing.small) + keyboardHeight,
+              paddingBottom: Math.max(insets.bottom, Spacing.small) + Platform.select({ ios: Math.min(keyboardHeight, 40), default: keyboardHeight }),
               paddingLeft: Spacing.medium + insets.left,
               paddingRight: Spacing.small + insets.right,
             },

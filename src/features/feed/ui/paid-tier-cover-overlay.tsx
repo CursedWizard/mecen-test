@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 
 export function PaidTierCoverOverlay({ blurTarget, onDonatePress }: PaidTierCoverOverlayProps) {
-  const blurIntensity = Platform.OS === 'android' ? 65 : 55;
+  const blurIntensity = Platform.OS === 'android' ? 50 : 75;
   const androidBlurProps =
     Platform.OS === 'android'
       ? ({ blurTarget, blurMethod: 'dimezisBlurView' } as const)

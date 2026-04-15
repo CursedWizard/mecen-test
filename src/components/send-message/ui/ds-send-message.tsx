@@ -31,6 +31,7 @@ export const DsSendMessage = React.forwardRef<TextInput, DsSendMessageProps>(fun
           placeholderTextColor={ColorPalette.AppTextSecondary}
           value={value}
           onChangeText={onChangeText}
+          autoCorrect={false}
         />
       </View>
       <DsIconButton

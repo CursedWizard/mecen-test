@@ -91,7 +91,7 @@ export const buttonActionStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    fontSize: 13,
+    fontSize: Platform.select({ ios: 15, android: 13 }),
     fontWeight: '600',
   },
   /** Read-only `TextInput` styled like the label (for animated digit counts). */
