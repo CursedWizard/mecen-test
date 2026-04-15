@@ -58,7 +58,14 @@ export default function RootLayout() {
           <ErrorHandler>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="feed" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="feed"
+                options={{
+                  headerShown: false,
+                  gestureEnabled: true,
+                  ...(Platform.OS === 'ios' ? { fullScreenGestureEnabled: true } : {}),
+                }}
+              />
             </Stack>
           </ErrorHandler>
         </ThemeProvider>
