@@ -1,56 +1,48 @@
-# Welcome to your Expo app 👋
+# Тестовое задание 1 - Mecenate
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Начало работы
 
-## Get started
-
-1. Install dependencies
+1. Установите зависимости
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Запустите приложение
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Запуск в Expo Go
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Проект использует **Expo SDK 55**.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Android
 
-## Get a fresh project
+Установите Expo Go версии **55.0.3** на ваше устройство или эмулятор:
 
-When you're ready, run:
+* [Expo-Go-55.0.3.apk](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-55.0.3/Expo-Go-55.0.3.apk)
+
+После установки убедитесь, что вы выполнили команду `npx expo start`, затем откройте проект в Expo Go (отсканируйте QR-код или используйте URL сервера разработки).
+
+### iOS (симулятор)
+
+Самый простой способ протестировать на iOS — использовать симулятор и соответствующую сборку Expo Go:
+
+1. Скачайте архив [Expo-Go-55.0.27.tar.gz](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-55.0.27/Expo-Go-55.0.27.tar.gz).
+2. Дважды щёлкните по архиву, чтобы распаковать его.
+3. Добавьте `.app` к имени распакованной папки (чтобы она стала корректным `.app`-пакетом для симулятора).
+4. Перетащите папку в окно симулятора, чтобы установить Expo Go.
+
+Затем запустите сервер разработки командой `npx expo start` и откройте приложение в Expo Go внутри симулятора.
+
+### iOS (физическое устройство)
+
+Для физического iPhone или iPad используйте EAS:
 
 ```bash
-npm run reset-project
+eas go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
