@@ -13,6 +13,7 @@ import Animated, {
 
 import { animatedSkeletonStyles } from '@/components/animated-skeleton/styles';
 import type { AnimatedSkeletonProps } from '@/components/animated-skeleton/types';
+import { ColorPalette } from '@/constants/theme';
 
 export function AnimatedSkeleton({ light = false, style }: AnimatedSkeletonProps) {
   const translateX = useSharedValue(0);
@@ -20,7 +21,7 @@ export function AnimatedSkeleton({ light = false, style }: AnimatedSkeletonProps
 
   const colors = React.useMemo(() => {
     const color = light ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)';
-    return ['transparent', color, 'transparent'] as [string, string, string];
+    return [ColorPalette.ActionDefaultBackgroundMain, color, ColorPalette.ActionDefaultBackgroundMain] as [string, string, string];
   }, [light]);
 
   React.useEffect(() => {
