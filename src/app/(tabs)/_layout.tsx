@@ -15,10 +15,6 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen
         name="index"
-        options={{
-          title: 'Лента',
-          tabBarIcon: ({ color }) => null,
-        }}
       />
     </Tabs>
   );

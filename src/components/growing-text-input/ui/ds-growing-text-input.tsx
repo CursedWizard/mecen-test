@@ -1,6 +1,12 @@
 import * as React from 'react';
-import { type NativeSyntheticEvent, type TextInput, type TextInputContentSizeChangeEventData } from 'react-native';
+import {
+  type LayoutChangeEvent,
+  Text,
+  type TextInput,
+  View
+} from 'react-native';
 
+import { dsTextInputStyles } from '@/components/design-system/text-input/styles';
 import { DsTextInput } from '@/components/design-system/text-input/ui/ds-text-input';
 import { ColorPalette } from '@/constants/theme';
 import {
@@ -14,7 +20,6 @@ export const DsGrowingTextInput = React.forwardRef<TextInput, DsGrowingTextInput
   {
     minHeight = dsGrowingTextInputMinHeight,
     maxHeight = dsGrowingTextInputMaxHeight,
-    onContentSizeChange,
     style,
     value,
     onChangeText,
@@ -23,47 +28,69 @@ export const DsGrowingTextInput = React.forwardRef<TextInput, DsGrowingTextInput
   ref,
 ) {
   const [inputHeight, setInputHeight] = React.useState(minHeight);
-  const currentValue = React.useRef(value);
   const lastHeight = React.useRef(minHeight);
 
-  React.useEffect(() => {
-    if (value === '') {
-      setInputHeight(minHeight);
-      lastHeight.current = minHeight;
-    }
-  }, [minHeight, value]);
+  const [internalText, setInternalText] = React.useState(() => {
+    const dv = textInputProps.defaultValue;
+    return dv !== undefined && dv !== null ? String(dv) : '';
+  });
 
-  const handleChangeText = React.useCallback((text: string) => {
-    currentValue.current = text;
-    onChangeText?.(text);
-  }, [maxHeight, minHeight, onChangeText]);
+  const textForMirror = value ?? internalText;
 
-  const handleContentSizeChange = React.useCallback(
-    (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
-      const height = e.nativeEvent.contentSize.height;
-      const newHeight = Math.max(Math.min(height, maxHeight), minHeight);
+  const handleChangeText = React.useCallback(
+    (text: string) => {
+      if (value === undefined) {
+        setInternalText(text);
+      }
+      onChangeText?.(text);
+    },
+    [onChangeText, value],
+  );
+
+  const handleMirrorLayout = React.useCallback(
+    (e: LayoutChangeEvent) => {
+      const measured = Math.ceil(e.nativeEvent.layout.height);
+      const newHeight = Math.max(Math.min(measured, maxHeight), minHeight);
       const shouldChange = Math.abs(lastHeight.current - newHeight) > 5;
       if (shouldChange) {
         setInputHeight(newHeight);
         lastHeight.current = newHeight;
-        onContentSizeChange?.(e);
       }
     },
-    [maxHeight, minHeight, onContentSizeChange, lastHeight],
+    [maxHeight, minHeight],
+  );
+
+  const mirrorStyle = React.useMemo(
+    () => [dsTextInputStyles.input, dsGrowingTextInputStyles.input, dsGrowingTextInputStyles.measureMirror, style],
+    [style],
+  );
+
+  const inputStyle = React.useMemo(
+    () => [dsGrowingTextInputStyles.input, { minHeight, maxHeight, height: inputHeight }, style],
+    [inputHeight, maxHeight, minHeight, style],
   );
 
   return (
-    <DsTextInput
-      ref={ref}
-      {...textInputProps}
-      {...(value !== undefined ? { value } : null)}
-      onChangeText={handleChangeText}
-      multiline
-      scrollEnabled={inputHeight >= maxHeight}
-      cursorColor={ColorPalette.PrimaryButtonBackgroundMain}
-      onContentSizeChange={handleContentSizeChange}
-      style={[dsGrowingTextInputStyles.input, { minHeight, maxHeight, height: inputHeight }, style]}
-      allowFontScaling={false}
-    />
+    <View style={dsGrowingTextInputStyles.root}>
+      <Text
+        allowFontScaling={false}
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+        onLayout={handleMirrorLayout}
+        style={mirrorStyle}>
+        {textForMirror}
+      </Text>
+      <DsTextInput
+        ref={ref}
+        {...textInputProps}
+        {...(value !== undefined ? { value } : null)}
+        onChangeText={handleChangeText}
+        multiline
+        scrollEnabled={inputHeight >= maxHeight}
+        cursorColor={ColorPalette.PrimaryButtonBackgroundMain}
+        style={inputStyle}
+        allowFontScaling={false}
+      />
+    </View>
   );
 });

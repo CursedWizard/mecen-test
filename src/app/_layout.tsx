@@ -16,6 +16,7 @@ import 'react-native-reanimated';
 import { ErrorHandler } from '@/components/error-handler/error-handler';
 import { queryClient } from '@/lib/query-client';
 import { Platform } from 'react-native';
+import { StackAnimationTypes } from 'react-native-screens';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +27,11 @@ if (__DEV__) {
 export const unstable_settings = {
   anchor: '(tabs)',
 };
+
+const animation = Platform.select({
+  ios: 'default',
+  android: 'fade',
+}) as StackAnimationTypes;
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -57,10 +63,11 @@ export default function RootLayout() {
         <ThemeProvider value={DefaultTheme}>
           <ErrorHandler>
             <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ animation, headerShown: false }} />
               <Stack.Screen
                 name="feed"
                 options={{
+                  animation,
                   headerShown: false,
                   gestureEnabled: true,
                   ...(Platform.OS === 'ios' ? { fullScreenGestureEnabled: true } : {}),
