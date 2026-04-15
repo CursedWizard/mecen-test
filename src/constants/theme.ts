@@ -67,6 +67,7 @@ export const Spacing = {
 export const BorderRadius = {
   default: 12,
   input: 20,
+  skeleton: 22,
   full: 9999,
 };
 

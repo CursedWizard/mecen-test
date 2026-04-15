@@ -22,7 +22,7 @@ import {
   TextInput,
   View
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function FeedPostDetailScreen() {
   const insets = useSafeAreaInsets();
@@ -131,13 +131,11 @@ export default function FeedPostDetailScreen() {
   if (!id) {
     return (
       <View style={styles.flex}>
-        <SafeAreaView style={styles.flex} edges={['bottom', 'left', 'right']}>
-          <View style={styles.centered}>
-            <DsTypography variant="body" style={styles.hint}>
-              Не указан пост
-            </DsTypography>
-          </View>
-        </SafeAreaView>
+        <View style={styles.centered}>
+          <DsTypography variant="body" style={styles.hint}>
+            Не указан пост
+          </DsTypography>
+        </View>
       </View>
     );
   }
@@ -145,14 +143,12 @@ export default function FeedPostDetailScreen() {
   if (isPostPending) {
     return (
       <View style={styles.flex}>
-        <SafeAreaView style={styles.flex} edges={['bottom', 'left', 'right']}>
-          <View style={styles.centered}>
-            <ActivityIndicator size="large" color={ColorPalette.PrimaryButtonBackgroundMain} />
-            <DsTypography variant="caption" style={styles.hint}>
-              Загрузка…
-            </DsTypography>
-          </View>
-        </SafeAreaView>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={ColorPalette.PrimaryButtonBackgroundMain} />
+          <DsTypography variant="caption" style={styles.hint}>
+            Загрузка…
+          </DsTypography>
+        </View>
       </View>
     );
   }
@@ -161,12 +157,10 @@ export default function FeedPostDetailScreen() {
     const is404 = postError instanceof ApiError && postError.status === 404;
     return (
       <View style={styles.flex}>
-        <SafeAreaView style={styles.flex} edges={['bottom', 'left', 'right']}>
-          <EmptyRequestResult
-            message={is404 ? 'Публикация не найдена' : 'Не удалось загрузить публикацию'}
-            onGoHome={onGoHomeFromError}
-          />
-        </SafeAreaView>
+        <EmptyRequestResult
+          message={is404 ? 'Публикация не найдена' : 'Не удалось загрузить публикацию'}
+          onGoHome={onGoHomeFromError}
+        />
       </View>
     );
   }

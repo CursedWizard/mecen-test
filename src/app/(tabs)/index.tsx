@@ -2,6 +2,7 @@ import { DsTypography } from '@/components/design-system';
 import { EmptyRequestResult } from '@/components/error-placeholder/ui';
 import { ColorPalette, Spacing } from '@/constants/theme';
 import { FeedPostCard } from '@/features/feed/ui/feed-post-card';
+import { FeedPostCardSkeleton } from '@/features/feed/ui/feed-post-card-skeleton';
 import type { Post } from '@/lib/api/types';
 import { useFeedInfiniteQuery, useLikePostMutation } from '@/queries/feed';
 import { router } from 'expo-router';
@@ -14,7 +15,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const FEED_SKELETON_KEYS = ['feed-skeleton-0', 'feed-skeleton-1', 'feed-skeleton-2'] as const;
 
 export default function FeedScreen() {
   const insets = useSafeAreaInsets();
@@ -52,20 +55,22 @@ export default function FeedScreen() {
     );
   }, [isFetchingNextPage]);
 
-  if (isPending) {
-    return (
-      <View style={[styles.centered, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={ColorPalette.PrimaryButtonBackgroundMain} />
-        <DsTypography variant="caption" style={styles.hint}>
-          Загрузка…
-        </DsTypography>
-      </View>
-    );
-  }
-
   const onGoHomeFromError = React.useCallback(() => {
     router.replace('/(tabs)');
   }, []);
+
+  if (isPending) {
+    return (
+      <View style={styles.root}>
+        <FlatList
+          data={FEED_SKELETON_KEYS}
+          keyExtractor={(id) => id}
+          renderItem={() => <FeedPostCardSkeleton />}
+          contentContainerStyle={styles.listContent}
+        />
+      </View>
+    );
+  }
 
   if (error) {
     return (
@@ -76,7 +81,7 @@ export default function FeedScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.root}>
+    <View style={styles.root}>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -96,14 +101,13 @@ export default function FeedScreen() {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: ColorPalette.TabBarTrackBackground,
   },
   listContent: {
     paddingBottom: Spacing.large,
@@ -118,16 +122,6 @@ const styles = StyleSheet.create({
   footer: {
     paddingVertical: Spacing.medium,
     alignItems: 'center',
-  },
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.mediumSmall,
-    backgroundColor: ColorPalette.TabBarTrackBackground,
-  },
-  hint: {
-    color: ColorPalette.ActionDefaultTextMain,
   },
   errorFallbackShell: {
     flex: 1,

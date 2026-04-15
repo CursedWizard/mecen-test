@@ -135,6 +135,36 @@ export const feedPostCardStyles = StyleSheet.create({
   },
 });
 
+export const feedPostCardSkeletonStyles = StyleSheet.create({
+  nameBar: {
+    height: 20,
+    borderRadius: BorderRadius.skeleton,
+    flex: 1,
+    minWidth: 0,
+    maxWidth: '40%',
+  },
+  titleLine: {
+    height: 26,
+    borderRadius: BorderRadius.skeleton,
+    width: '30%',
+  },
+  bodyLine: {
+    height: 20,
+    borderRadius: BorderRadius.skeleton,
+    width: '100%',
+  },
+  likeActionSkeleton: {
+    width: 90,
+    minHeight: 36,
+    borderRadius: BorderRadius.full,
+  },
+  commentsActionSkeleton: {
+    width: 88,
+    minHeight: 36,
+    borderRadius: BorderRadius.full,
+  },
+});
+
 export const feedPostDetailStyles = StyleSheet.create({
   commentsMetaRow: {
     flexDirection: 'row',
