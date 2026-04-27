@@ -94,7 +94,7 @@ function FeedScreen() {
         ListFooterComponent={footer}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={() => void refetch()} colors={[ColorPalette.PrimaryButtonBackgroundMain]} />
+          <RefreshControl refreshing={isRefetching || feedStore.isFeedLoading} onRefresh={() => void refetch()} colors={[ColorPalette.PrimaryButtonBackgroundMain]} />
         }
         onEndReached={onEndReached}
         onEndReachedThreshold={0.35}

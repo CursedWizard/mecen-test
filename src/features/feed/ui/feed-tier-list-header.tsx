@@ -16,10 +16,14 @@ export const FeedTierListHeader = observer(() => {
 
   const onSelect = React.useCallback((key: string) => {
     setCurrentKey(key as FeedTierTabKey);
+    feedStore.setIsFeedLoading(true);
   }, []);
 
   const onAnimationEnd = React.useCallback((key?: string) => {
+    /* Wait for animation to end, otherwise screen will freeze for a moment */
     feedStore.setTierFilter(feedTierFilterFromTabKey(key as FeedTierTabKey));
+    /* This way we hide loading indicator when list finished rendering */
+    feedStore.setIsFeedLoading(false);
   }, []);
 
   return (
